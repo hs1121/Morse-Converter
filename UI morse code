@@ -1,0 +1,165 @@
+from tkinter import *
+from tkinter import messagebox
+from PIL import ImageTk,Image
+
+layout_bg="#e6a835"
+text_col="#000"
+run =True
+
+def on_closing():     # when close button is pressed
+   if messagebox.askokcancel("Quit", "Do you want to quit?"):
+       global run
+       run=False
+
+class Home:
+    def __init__(self,root):
+       self.max_height =root.winfo_screenheight() 
+       self.max_width = root.winfo_screenwidth()         # setting dimentions for max and initial window
+       self.cur_height =self.max_height
+       self.cur_width = self.max_width
+
+       root.title('Morsecode Converter')
+       root.configure(background=layout_bg)                               # Setting the root window
+       root.geometry(str(self.cur_width)+"x"+str(self.cur_height)+"+0+0")
+       root.minsize(800, 600)
+       self.l_heading=Label(root,fg=text_col, bg=layout_bg,text="MORSECODE CONVERTER")
+
+       self.t_input=Text(root,bg="#edd29f")
+       self.t_output=Text(root,bg="#edd29f",state=DISABLED)
+
+       self.is_playing=False
+       self.is_sound=False
+       self.is_light=False
+
+
+       ###########################Buttons######################################
+       self.b_play=Button(root,command = self.on_click(1))
+       self.b_pause=Button(root,command = self.on_click(2))
+       self.b_repeat=Button(root,command = self.on_click(3))
+       self.b_sound=Button(root,command = self.on_click(4))
+       self.b_light=Button(root,command = self.on_click(5))
+       self.b_submit=Button(root,command = self.on_click(6))
+
+
+    def update_fun(self):    # function to update the parameters (similar to constraint layout)
+        root.update()
+        self.cur_height =root.winfo_height()     # Updating the window size 
+        self.cur_width =root.winfo_width()
+
+        self.l_heading.configure(font=("Courier", self.cast_text(44)))
+
+        self.place_mod(self.l_heading,30,5,40,5)
+        self.place_mod(self.t_input,25,20,50,15)
+        self.place_mod(self.t_output,25,50,50,15)
+
+        self.place_mod(self.b_play,35,36,5,5)
+        self.place_mod(self.b_pause,40,36,5,5)
+        self.place_mod(self.b_repeat,45,36,5,5)
+        self.place_mod(self.b_sound,50,36,5,5)
+        self.place_mod(self.b_light,55,36,5,5)
+
+        self.place_mod(self.b_submit,70,36,5,5)
+        self.b_submit.configure(text="Submit",font=("Courier", self.cast_text(15)))
+
+        self.img_but()
+
+        root.update()
+
+
+   #####################  Life easior making functions ##################
+    def place_mod(self,obj,x1,y1,x2,y2):
+        obj.place(x=self.castx(x1),y=self.casty(y1),width=self.castx(x2),height=self.casty(y2))
+
+
+    ####################      casting functions to handle variable screen size   #############
+    def cast_text(self,f_size):
+        return (int)(self.cur_width/self.max_width*f_size)
+    def castx(self,x):                  # converting the window width from 1 to 100 to make placing widgets easily
+       return(int)(x/100*self.cur_width)
+    def casty(self,y):                   # converting the window height from 1 to 100 to make placing widgets easily
+      return(int)(y/100*self.cur_height)
+
+
+       ##########  image buttons function   #############
+    def img_but(self): 
+        self.i_play=Image.open("play.png")
+        self.i_pause=Image.open("pause.png")
+        self.i_repeat=Image.open("repeat.png")
+        self.i_sound=Image.open("sound.png")
+        self.i_light=Image.open("light.png")
+
+        self.i_play=self.i_play.resize((self.castx(2), self.casty(2)), Image. ANTIALIAS)
+        self.i_pause=self.i_pause.resize((self.castx(2), self.casty(2)), Image. ANTIALIAS)
+        self.i_repeat=self.i_repeat.resize((self.castx(2), self.casty(2)), Image. ANTIALIAS)
+        self.i_sound=self.i_sound.resize((self.castx(2), self.casty(2)), Image. ANTIALIAS)
+        self.i_light=self.i_light.resize((self.castx(2), self.casty(2)), Image. ANTIALIAS)
+
+        self.i_play=ImageTk.PhotoImage(self.i_play)
+        self.i_pause=ImageTk.PhotoImage(self.i_pause)
+        self.i_repeat=ImageTk.PhotoImage(self.i_repeat)
+        self.i_sound=ImageTk.PhotoImage(self.i_sound)
+        self.i_light=ImageTk.PhotoImage(self.i_light)
+
+        self.b_pause.configure(image=self.i_pause)
+        self.b_play.configure(image=self.i_play)
+        self.b_light.configure(image=self.i_light)
+        self.b_sound.configure(image=self.i_sound)
+        self.b_repeat.configure(image=self.i_repeat)
+
+
+   ########          ON CLICK FUNCTIONS          ######
+    def on_click(self,arg):
+
+        if arg==1:
+            self.is_playing=True
+            #TODO play fun from yash class
+            pass
+        elif arg==2:
+            self.is_playing=False
+            #TODO paust fun from yash class
+            pass
+        elif arg==3:
+            self.is_playing=True
+            #TODO repeat fun from yash class
+            pass
+        elif arg==4:
+            if self.is_sound==False:
+               self. is_playing=True
+               self.is_sound=True
+                #TODO sound fun from yash class
+               pass
+            else:
+                is_sound=True
+                pass
+            pass
+        elif arg==5:
+            if self.is_light==False:
+                self.is_playing=True
+                self.is_light=True
+                #TODO light fun from yash class
+                pass
+            else:
+                self.is_light=True
+                pass
+            pass
+        elif arg ==6:
+          self.t_output.configure(state=NORMAL)
+          self.t_output.delete('1.0', END)
+          inp = self.t_input.get("1.0",END)
+          self.t_output.insert(INSERT,inp)
+          self.t_output.configure(state=DISABLED)
+
+
+
+
+############################# class home ends###############################
+
+root = Tk()
+home_obj=Home(root) 
+root.protocol("WM_DELETE_WINDOW", on_closing)   # event handling for clicling close button
+
+while run:         # alternative to mainloop() to edit updtes as required
+    root.after(100,home_obj.update_fun())
+
+root.destroy()
+
